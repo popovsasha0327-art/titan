@@ -31,7 +31,21 @@
         body { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: radial-gradient(circle at top right, rgba(230, 12, 237, 0.03), transparent), radial-gradient(circle at bottom left, rgba(2, 182, 237, 0.03), transparent); }
 
         /* ГЛАВНЫЙ КОНТЕЙНЕР ОРАКУЛА */
-        .oracle-container { width: 100%; max-width: 650px; background: rgba(23, 24, 31, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 32px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.7); animation: boot 0.5s ease-out; }
+        .oracle-container { 
+            width: 100%; 
+            max-width: 750px; /* Немного увеличим ширину для ПК */
+            height: 85vh;     /* Занимает 85% от высоты любого экрана */
+            background: rgba(23, 24, 31, 0.95); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid var(--border); 
+            border-radius: 32px; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7); 
+            animation: boot 0.5s ease-out; 
+}
         
         .top-nav { padding: 16px 24px; display: flex; justify-content: flex-end; gap: 10px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
         .toggle-mode-btn { background: var(--border); border: 1px solid rgba(255,255,255,0.05); color: var(--cyan); padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
@@ -50,8 +64,18 @@
         .logo-text { font-weight: 900; font-size: 18px; letter-spacing: 3px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
 
         /* ЭКРАНЫ ИНТЕРФЕЙСА */
-        #chat-screen, #packs-screen { display: flex; flex-direction: column; flex-grow: 1; height: 550px; overflow: hidden; }
-        #packs-screen { display: none; padding: 24px; overflow-y: auto; height: 550px; }
+        #chat-screen, #packs-screen { 
+        display: flex; 
+        flex-direction: column; 
+        flex-grow: 1; 
+        height: 100%; /* Теперь они гибко заполняют всю высоту контейнера */
+        overflow: hidden; 
+}
+        #packs-screen { 
+        display: none; 
+        padding: 24px; 
+        overflow-y: auto; 
+}
 
         /* ЧАТ-ПОТОКИ */
         .chat-flow-box { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
