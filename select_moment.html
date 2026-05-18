@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор формата — LMSH I/O</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #010103; /* Фирменный глубокий космо-темный */
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Главный контейнер-карточка */
+        .select-container {
+            background: rgba(23, 24, 31, 0.95);
+            border: 1px solid #1f2330;
+            border-radius: 24px;
+            padding: 40px 24px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #02b6ed; /* Циановый неон */
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #8a8d9b;
+            margin-bottom: 32px;
+        }
+
+        /* Сетка для выбора вариантов */
+        .choice-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Стили для красивых больших кнопок-карточек */
+        .media-btn {
+            background: #0d0e11;
+            color: #ffffff;
+            border: 2px solid #1f2330;
+            border-radius: 16px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Эффект при наведении на Видео-шлюз */
+        .video-gate:hover {
+            border-color: #02b6ed;
+            box-shadow: 0 0 20px rgba(2, 182, 237, 0.3);
+            transform: scale(1.03);
+            color: #02b6ed;
+        }
+
+        /* Эффект при наведении на Аудио-шлюз */
+        .audio-gate:hover {
+            border-color: #e60ced; /* Пурпурный неон под стиль слияния капель */
+            box-shadow: 0 0 20px rgba(230, 12, 237, 0.3);
+            transform: scale(1.03);
+            color: #e60ced;
+        }
+
+        /* Адаптивность под узкий Split View */
+        @media (max-width: 400px) {
+            .select-container {
+                padding: 24px 16px;
+                border: none;
+                background: transparent;
+            }
+            .title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="select-container">
+        
+        <div class="title">ВЫБЕРИТЕ ФОРМАТ ОБЗОРА</div>
+        <div class="subtitle">Интеграция шлюзов Kosmo Level 3.4 активна</div>
+
+        <div class="choice-grid">
+            
+            <button class="media-btn video-gate" onclick="location.href='video1.html'">
+                🎬 Видеообзор (Шлюз Video1)
+            </button>
+
+            <button class="media-btn audio-gate" onclick="location.href='audio1.html'">
+                🎵 Аудиообзор (Шлюз Audio1)
+            </button>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
