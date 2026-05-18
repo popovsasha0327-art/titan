@@ -72,11 +72,15 @@
         .item-card:hover { border-color: var(--cyan); background: rgba(2, 182, 237, 0.02); }
         .item-name { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; }
 
-        .download-btn { display: block; padding: 8px; background: var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; transition: 0.2s; }
+        .download-btn { display: block; padding: 8px; background: var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; transition: 0.2s; cursor: pointer; border: none; }
         .download-btn:hover { background: var(--cyan); color: #000; }
         .steam-btn { background: var(--grad) !important; color: #fff !important; }
 
-        /* КАРТОЧКА МАТЕРИАЛЬНОГО РИДЕРА */
+        /* КУРАТОР ИСТОРИЙ И РИДЕР */
+        .story-selector { display: flex; gap: 8px; margin-bottom: 12px; }
+        .story-tab-btn { flex: 1; background: var(--border); border: 1px solid transparent; color: var(--sub); padding: 10px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .story-tab-btn.active { background: rgba(2, 182, 237, 0.1); border-color: var(--cyan); color: var(--cyan); }
+        
         .reader-inner-card { background: #0d0e11; border-radius: 20px; border: 1px solid var(--border); padding: 20px; position: relative; margin-bottom: 20px; }
         .story-container { max-height: 220px; overflow-y: auto; padding-right: 4px; }
         .story-content { font-size: 15px; line-height: 1.6; outline: none; text-align: justify; color: var(--text); }
@@ -147,20 +151,24 @@
             <div class="item-name" style="color: var(--cyan); font-size: 14px;">A Better Place 1.3.7</div>
             <div style="font-size: 11px; opacity: 0.6; margin-bottom: 12px;">Установка официального релиза без багов ссылок облачных дисков:</div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-                <a href="https://play.google.com/store/apps/details?id=com.lastquarterstudios.catsareliquidabetterplace" class="download-btn" target="_blank" style="text-align: left; padding-left: 15px;">🤖 Android — Google Play</a>
-                <a href="https://apps.apple.com/app/cats-are-liquid-a-better-place/id1524317135" class="download-btn" target="_blank" style="text-align: left; padding-left: 15px;">🍏 iPhone / iOS — App Store</a>
+                <a href="https://play.google.com/store/apps/details?id=com.lastquarterstudios.catsareliquidabp" class="download-btn" target="_blank" style="text-align: left; padding-left: 15px;">🤖 Android — Google Play</a>
+                <a href="https://apps.apple.com/us/app/cats-are-liquid-abp/id1485934366" class="download-btn" target="_blank" style="text-align: left; padding-left: 15px;">🍏 iPhone / iOS — App Store</a>
                 <a href="https://store.steampowered.com/app/1188080/Cats_are_Liquid__A_Better_Place/" class="download-btn steam-btn" target="_blank" style="text-align: left; padding-left: 15px;">💻 Windows — Steam</a>
             </div>
         </div>
 
-        <!-- ИИ РИДЕР ХРОНИК (ВАРИАНТ 2 В НЕОНОВОМ СТИЛЕ) -->
+        <!-- ИИ РИДЕР ХРОНИК С ДВУМЯ ИСТОРИЯМИ -->
         <div class="section-title">🔮 Kosmo Level AI Reader v2.0</div>
+        
+        <div class="story-selector">
+            <button class="story-tab-btn active" id="tab-story1" onclick="loadStory(1)">Читать: Летание</button>
+            <button class="story-tab-btn" id="tab-story2" onclick="loadStory(2)">Читать: Оракул Поток</button>
+        </div>
+
         <div class="reader-inner-card">
             <div class="story-container" id="scroll-box">
                 <div class="story-content" id="editor" contenteditable="true" spellcheck="false">
-                    <p><b>НОВАЯ ИСТОРИЯ: Летание (Глава 2)</b></p>
-                    <p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p> 
-                    <p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--m3-primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>
+                    <!-- Сюда скрипт вставит дефолтную историю -->
                 </div>
                 <div id="ai-loading" class="ai-status">🔮 ОРАКУЛ: КОРРЕКЦИЯ СЛОЯ ХРОНИК...</div>
             </div>
@@ -181,14 +189,14 @@
             </div>
         </div>
 
-        <!-- АРХИВЫ С ОБНОВЛЕНИЯМИ -->
+        <!-- АРХИВЫ С ОБНОВЛЕНИЯМИ (ПОЛНЫЙ МАССИВ) -->
         <div class="section-title">Паки Kosmo Level</div>
         <div class="packs-grid" id="packs-list"></div>
 
         <div class="section-title">Preview & Спец-билды</div>
         <div class="packs-grid">
-            <div class="item-card"><div class="item-name">Kosmo Level 3.3 Beta</div><a href="packs/Kosmo_Level_3.3_Beta.worldpack" class="download-btn" download>Скачать</a></div>
-            <div class="item-card"><div class="item-name">Traitor Level 2.2</div><a href="packs/Traitor_Level_2.2.worldpack" class="download-btn" download>Скачать</a></div>
+            <div class="item-card"><div class="item-name">Kosmo Level 3.3 Beta</div><a href="https://oracle-ai-pro.github.io/oracle/packs/Kosmo_Level_3.3_Beta.worldpack" class="download-btn" download>Скачать</a></div>
+            <div class="item-card"><div class="item-name">Traitor Level 2.2</div><a href="https://oracle-ai-pro.github.io/oracle/packs/Traitor_Level_2.2.worldpack" class="download-btn" download>Скачать</a></div>
         </div>
     </div>
 </div>
@@ -221,8 +229,23 @@
 </div>
 
 <script>
-    // Обновленный массив паков, включая новые версии 3.3.1 и 3.4
-    const versions = ["1.0", "2.0", "2.5", "3.0", "3.3", "3.3.1", "3.4"];
+    // Полный обновленный массив паков по твоей спецификации
+    const versions = ["1.0", "2.0", "2.2", "2.5", "2.8", "2.9", "3.0", "3.1", "3.2", "3.3", "3.3.1", "3.4"];
+    
+    // База данных наших двух историй для кнопок "Читать"
+    const stories = {
+        1: `
+            <p><b>НОВАЯ ИСТОРИЯ: Летание (Глава 2)</b></p>
+            <p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p> 
+            <p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--m3-primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>
+        `,
+        2: `
+            <p><b>ДОПОЛНИТЕЛЬНАЯ ХРОНИКА: Поток Оракула (Пролог 2.0)</b></p>
+            <p>Системы ядра зафиксировали аномалию на уровне Kosmo Level 3.4. Тёмные слои неона начали медленно сжиматься вокруг Штаба ЛМСХ. Инженер активировал аварийный шлюз вещания.</p>
+            <p>«Замок заблокирован», — раздался холодный сигнал ИИ. Чтобы открыть архивные паки, структура кода должна полностью сойтись с абсолютными путями хостинга GitHub...</p>
+        `
+    };
+
     let currentScreen = "chat";
     let currentSavedSelection = null;
 
@@ -245,6 +268,15 @@
         }
     }
 
+    // Загрузка выбранной истории по кнопке "Читать"
+    function loadStory(id) {
+        document.getElementById('tab-story1').classList.toggle('active', id === 1);
+        document.getElementById('tab-story2').classList.toggle('active', id === 2);
+        editor.innerHTML = stories[id];
+        scrollBox.scrollTop = 0;
+    }
+
+    // Генерация паков с использованием точного абсолютного пути GitHub Pages
     function renderPacks() {
         const list = document.getElementById('packs-list');
         list.innerHTML = "";
@@ -252,7 +284,7 @@
             list.innerHTML += `
                 <div class="item-card">
                     <div class="item-name">Kosmo Level ${v}</div>
-                    <a href="packs/Kosmo_Level_${v}.worldpack" class="download-btn" download>Скачать</a>
+                    <a href="https://oracle-ai-pro.github.io/oracle/packs/Kosmo_Level_${v}.worldpack" class="download-btn" download>Скачать</a>
                 </div>`;
         });
     }
@@ -333,14 +365,14 @@
     }
 
     function openPodcast() {
-        // Ссылка на обход шлюза через домен Оракула
         const secureUrl = "https://notebooklm.google.com/notebook/твой_id_блокнота";
         window.open(secureUrl, '_blank');
     }
 
     window.onclick = function(event) { if (aiMenu && aiMenu.style.display === 'block') { aiMenu.style.display = 'none'; } }
 
-    // Первичный запуск систем
+    // Инициализация дефолтных систем
+    loadStory(1);
     renderPacks();
 </script>
 
