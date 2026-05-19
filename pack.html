@@ -2,44 +2,252 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Загрузка пака</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Titan System | PRESTIGE HQ</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --card: #1c1c1e;
+            --accent: #bf5af2;
+            --text: #ffffff;
+            --input: #2c2c2e;
+            --danger: #ff453a;
+            --shadow: rgba(191, 90, 242, 0.3);
+        }
+
+        /* ЦВЕТОВЫЕ АКЦЕНТЫ */
+        body.accent-purple { --accent: #bf5af2; --shadow: rgba(191, 90, 242, 0.4); }
+        body.accent-green  { --accent: #32d74b; --shadow: rgba(50, 215, 75, 0.4); }
+        body.accent-blue   { --accent: #0a84ff; --shadow: rgba(10, 132, 255, 0.4); }
+        body.accent-red    { --accent: #ff375f; --shadow: rgba(255, 55, 95, 0.4); }
+
+        /* ТЕМЫ ФОНА */
+        body.theme-kosmo { --bg: #1a0b3d; --card: #251352; --input: #311b6b; }
+        body.theme-light { 
+            --bg: #f2f2f7; --card: #ffffff; --text: #000000; 
+            --input: #e5e5ea; --shadow: rgba(0, 0, 0, 0.1); 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; transition: all 0.4s ease; }
+
+        /* СКРОЛЛБАР */
+        .card::-webkit-scrollbar, .oracle-messages::-webkit-scrollbar { width: 4px; }
+        .card::-webkit-scrollbar-thumb, .oracle-messages::-webkit-scrollbar-thumb {
+            background: var(--accent); border-radius: 10px; box-shadow: 0 0 8px var(--accent);
+        }
+
+        .settings-btn { position: fixed; top: 25px; right: 25px; font-size: 24px; z-index: 1000; cursor: pointer; opacity: 0.6; transition: 0.3s; }
+        .settings-btn:hover { opacity: 1; transform: rotate(90deg); }
+
+        .setting-select { width: 100%; padding: 15px; border-radius: 12px; background: var(--input); color: var(--text); border: 1px solid rgba(255,255,255,0.1); outline: none; margin-bottom: 15px; }
+
+        /* ЗАСТАВКА */
+        #splash-screen { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s; }
+        .loader-lmsh { display: flex; gap: 15px; font-size: 50px; font-weight: 900; color: var(--accent); }
+        .loader-lmsh span { display: inline-block; animation: jump 0.8s infinite alternate; }
+        @keyframes jump { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); text-shadow: 0 10px 20px var(--accent); } }
+
+        /* ЭКРАНЫ */
+        .screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 10; transition: 0.5s; }
+        .hidden { opacity: 0; pointer-events: none; transform: scale(0.95); filter: blur(10px); }
+        .card {
+            background: var(--card); width: 100%; max-width: 380px; padding: 30px;
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); text-align: center;
+            box-shadow: 0 20px 50px -10px var(--shadow); max-height: 90vh; overflow-y: auto;
+        }
+
+        h1, h2 { margin-bottom: 20px; letter-spacing: -1px; text-transform: uppercase; }
+        input, textarea { width: 100%; background: var(--input); border: 1px solid transparent; padding: 16px; border-radius: 15px; color: var(--text); margin-bottom: 12px; font-size: 16px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent); }
+
+        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-text { background: none; color: var(--accent); font-weight: 600; margin-top: 10px; cursor: pointer; border: none; width: 100%; }
+
+        .helper-info { background: rgba(255,255,255,0.05); border-left: 3px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 12px; text-align: left; }
+
+        /* ОРАКУЛ */
+        .oracle-bubble { position: fixed; top: 30px; left: 20px; right: 20px; max-width: 360px; margin: 0 auto; background: var(--card); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); z-index: 10000; padding: 15px; display: none; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .oracle-messages { max-height: 120px; overflow-y: auto; margin-bottom: 10px; font-size: 13px; text-align: left; }
+    </style>
 </head>
-<body>
-    <div class="container" id="pack-content">
-        <h1 id="pack-title">Загрузка...</h1>
-        <img id="pack-image" src="" alt="">
-        <p id="pack-description"></p>
-        <button id="download-btn" class="install-btn">Установить прямо сейчас</button>
-        <br><br>
-        <a href="index.html" style="color: #01875f;">← Назад в магазин</a>
+<body class="accent-purple theme-kosmo">
+
+    <div id="splash-screen">
+        <div class="loader-lmsh"><span>Л</span><span>М</span><span>С</span><span>Х</span></div>
+        <p style="font-size: 10px; opacity: 0.5; margin-top: 20px; letter-spacing: 3px;">TITAN OS 3.4</p>
+    </div>
+
+    <div class="settings-btn" onclick="showScreen('screen-settings')">⚙️</div>
+
+    <div class="oracle-bubble" id="oracle-box">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:10px; opacity:0.5; font-weight:bold;">
+            <span>QUICK HELPER</span>
+            <span onclick="toggleOracle()" style="cursor:pointer;">✕</span>
+        </div>
+        <div class="oracle-messages" id="chat-flow">Система активна. 🔑)</div>
+        <div style="display:flex; gap:5px; background:rgba(0,0,0,0.2); padding:5px; border-radius:10px;">
+            <input type="text" id="oracle-typing" placeholder="Команда..." style="margin:0; padding:8px; font-size:13px; background:transparent;">
+            <button onclick="sendToOracle()" style="background:var(--accent); border:none; width:35px; border-radius:8px; color:white; cursor:pointer;">➔</button>
+        </div>
+    </div>
+
+    <div id="screen-main" class="screen">
+        <div class="card">
+            <h1>TITAN SYSTEM</h1>
+            <button class="btn" onclick="showScreen('screen-form')">Отправить Запрос</button>
+            <button class="btn btn-text" onclick="toggleOracle()">Быстрый Помощник</button>
+            <button class="btn btn-text" onclick="showScreen('screen-search')">Поиск Ответов</button>
+        </div>
+    </div>
+
+    <div id="screen-settings" class="screen hidden">
+        <div class="card">
+            <h2>ENGINEERING BAY</h2>
+            <div style="text-align:left;">
+                <p style="font-size:11px; font-weight:bold; opacity:0.6; margin-bottom:5px;">Цвет Темы</p>
+                <select id="acc-val" class="setting-select" onchange="applyStyles()">
+                    <option value="accent-purple">Фиолетовый</option>
+                    <option value="accent-green">Зеленый</option>
+                    <option value="accent-blue">Синий</option>
+                    <option value="accent-red">Красный</option>
+                </select>
+                <p style="font-size:11px; font-weight:bold; opacity:0.6; margin-bottom:5px;">ФОН СИСТЕМЫ</p>
+                <select id="bg-val" class="setting-select" onchange="applyStyles()">
+                    <option value="theme-kosmo">Фиолетовая (новая)</option>
+                    <option value="theme-dark">Темная</option>
+                    <option value="theme-light">Светлая</option>
+                </select>
+            </div>
+            <button class="btn" onclick="showScreen('screen-main')">Применить Изменения</button>
+        </div>
+    </div>
+
+    <div id="screen-form" class="screen hidden">
+        <div class="card">
+            <h2>Новый Запрос</h2>
+            <input type="email" id="f-email" placeholder="Введите ваш Email">
+            <input type="text" id="f-sub" placeholder="Заголовок">
+            <textarea id="f-msg" placeholder="Сообщение..." rows="3"></textarea>
+            <input type="text" id="f-pin" placeholder="PIN (запомните)!" style="text-align:center;">
+            <button class="btn" onclick="startConfirm()">Дальше</button>
+            <button class="btn btn-text" onclick="showScreen('screen-main')">Назад</button>
+        </div>
+    </div>
+
+    <div id="screen-confirm" class="screen hidden">
+        <div class="card" style="border: 1px solid var(--danger);">
+            <h2 style="color:var(--danger);">Подверждение!</h2>
+            <div class="helper-info">Введите ваш PIN повторно. Чтобы вы могли получить ответ</div>
+            <input type="text" id="f-pin-confirm" placeholder="Повторите PIN" style="text-align:center;" oninput="checkPins()">
+            <button class="btn" id="final-btn" onclick="sendToSheet()" style="opacity:0.3; pointer-events:none;">Отправить</button>
+            <button class="btn btn-text" onclick="showScreen('screen-form')">Назад</button>
+        </div>
+    </div>
+
+    <div id="screen-search" class="screen hidden">
+        <div class="card">
+            <h2>Поиск Ответа</h2>
+            <input type="email" id="s-email" placeholder="Ваш Email">
+            <input type="text" id="s-pin" placeholder="Ваш PIN">
+            <button class="btn" onclick="searchInSheet()">Найти</button>
+            <div id="search-results" style="margin-top:15px; text-align:left; font-size:12px; color:var(--accent);"></div>
+            <button class="btn btn-text" onclick="showScreen('screen-main')">Назад</button>
+        </div>
     </div>
 
     <script>
-        // База данных паков прямо в коде (можно вынести в отдельный JSON)
-        const packData = {
-            "pack-30822": {
-                title: "KL Preview 30822",
-                img: "unnamed (2).png",
-                desc: "Это превью версия пака с новыми уровнями от Снежинки. Окунитесь в атмосферу космоса!",
-                file: "KL Preview 30822.worldpack"
-            }
-            // Сюда будешь добавлять новые паки
-        };
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlDNCzP0A8rCxIvTxoKJpCYOEf9vK00ZRn-uugmE4QIMUb7g__alwMGYtwJnCzD6t9XQ/exec";
 
-        // Получаем ID из адресной строки (например, ?id=pack-30822)
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const s = document.getElementById('splash-screen');
+                if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 800); }
+            }, 2500);
+        });
 
-        if (packData[id]) {
-            const pack = packData[id];
-            document.getElementById('pack-title').innerText = pack.title;
-            document.getElementById('pack-image').src = pack.img;
-            document.getElementById('pack-description').innerText = pack.desc;
-            document.getElementById('download-btn').onclick = () => window.location.href = pack.file;
-        } else {
-            document.getElementById('pack-content').innerHTML = "<h1>Пак не найден</h1><a href='index.html'>Вернуться</a>";
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function applyStyles() {
+            const acc = document.getElementById('acc-val').value;
+            const bg = document.getElementById('bg-val').value;
+            document.body.className = `${acc} ${bg}`;
+        }
+
+        function startConfirm() {
+            if(!document.getElementById('f-email').value || !document.getElementById('f-pin').value) return alert('Заполните поля!');
+            showScreen('screen-confirm');
+        }
+
+        function checkPins() {
+            const p1 = document.getElementById('f-pin').value;
+            const p2 = document.getElementById('f-pin-confirm').value;
+            const b = document.getElementById('final-btn');
+            if(p1 === p2 && p1 !== "") { b.style.opacity="1"; b.style.pointerEvents="auto"; }
+            else { b.style.opacity="0.3"; b.style.pointerEvents="none"; }
+        }
+
+        function sendToSheet() {
+            const b = document.getElementById('final-btn');
+            b.innerText = "Отправка...";
+            const data = {
+                email: document.getElementById('f-email').value,
+                subject: document.getElementById('f-sub').value,
+                message: document.getElementById('f-msg').value,
+                pin: document.getElementById('f-pin').value
+            };
+            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
+            .then(() => {
+                alert('Запрос успешно передан');
+                // Очистка полей БЕЗ перезагрузки
+                document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+                showScreen('screen-main');
+                b.innerText = "ОТПРАВИТЬ";
+            });
+        }
+
+        function searchInSheet() {
+            const res = document.getElementById('search-results');
+            const email = document.getElementById('s-email').value;
+            const pin = document.getElementById('s-pin').value;
+            if(!email || !pin) return alert("Введите данные!");
+            res.innerText = "Синхронизация...";
+            fetch(`${SCRIPT_URL}?email=${encodeURIComponent(email)}&pin=${encodeURIComponent(pin)}`)
+            .then(r => r.json())
+            .then(d => {
+                if(d.length > 0) {
+                    res.innerHTML = d.map(i => `<div style="border-bottom:1px solid rgba(255,255,255,0.1); padding:8px 0;"><b>${i.subject}</b>: ${i.status || 'В работе'}</div>`).join('');
+                } else { res.innerText = "Ответы не найдены. Но ваш адрес записан"; }
+            }).catch(() => res.innerText = "Произошла ошибка. Повторите попытку");
+        }
+
+        function toggleOracle() {
+            const b = document.getElementById('oracle-box');
+            b.style.display = b.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function sendToOracle() {
+            const i = document.getElementById('oracle-typing');
+            const f = document.getElementById('chat-flow');
+            const val = i.value.toLowerCase();
+            if(!val) return;
+            
+            f.innerHTML += `<div style="color:var(--accent); margin-top:5px;">● ${i.value}</div>`;
+            
+            let reply = "Привет";
+            if(val.includes("привет")) reply = "Привет. Чем помочь";
+            if(val.includes("как заполнить форму?")) reply = "Чтобы заполнить форму, нужно нажать на 'Отправить запрос' а затем укажите ваш Email, Заголовок, Сообщение..., и Пин код. Потом подвердите ваш Пин код в новом окне.";
+            if(val.includes("чем поможешь?")) reply = "Я помощник. Но не расширенный";
+            
+            setTimeout(() => {
+                f.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:10px; margin-top:5px;">${reply}</div>`;
+                f.scrollTop = f.scrollHeight;
+            }, 600);
+            i.value = "";
         }
     </script>
 </body>
