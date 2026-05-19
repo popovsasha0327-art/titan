@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oracle AI 2.0 | Prestige HQ</title>
+    <title>Oracle AI 2.1 | Prestige HQ</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#010103">
     <style>
@@ -22,12 +22,28 @@
             --grad: linear-gradient(90deg, #02b6ed 0%, #e60ced 100%);
         }
 
+        /* ЭКСПЕРИМЕНТАЛЬНАЯ НЕОНОВАЯ СВЕТЛАЯ ТЕМА */
+        body.light-theme {
+            --bg: #f4f5fa;
+            --card: #ffffff;
+            --text: #1c1b1f;
+            --sub: #65666f;
+            --border: #dcdde7;
+            background: radial-gradient(circle at top right, rgba(230, 12, 237, 0.08), transparent), radial-gradient(circle at bottom left, rgba(2, 182, 237, 0.08), transparent);
+        }
+
+        body.light-theme .oracle-container { background: rgba(255, 255, 255, 0.9); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+        body.light-theme .ai-msg { background: rgba(0, 0, 0, 0.03); color: #1c1b1f; }
+        body.light-theme input { background: #f0f1f7; color: #1c1b1f; }
+        body.light-theme .reader-inner-card, body.light-theme .io-stream-container { background: #f0f1f7; }
+        body.light-theme .story-content { color: #1c1b1f; }
+
         ::-webkit-scrollbar { width: 5px; background: transparent; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
 
-        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; transition: background 0.3s ease; }
         body { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; background: radial-gradient(circle at top right, rgba(230, 12, 237, 0.03), transparent), radial-gradient(circle at bottom left, rgba(2, 182, 237, 0.03), transparent); }
 
         /* ГЛАВНЫЙ КОНТЕЙНЕР ОРАКУЛА */
@@ -53,7 +69,7 @@
         .menu-trigger-btn { background: var(--border); border: 1px solid rgba(255,255,255,0.05); color: var(--cyan); padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
         .menu-trigger-btn:hover { border-color: var(--cyan); box-shadow: 0 0 10px rgba(2, 182, 237, 0.2); }
 
-        /* ВСПЛЫВАЮЩИЙ СЛОЙ: ПАКИ И ИСТОРИИ (DROP-DOWN OVERLAY) */
+        /* ВСПЛЫВАЮЩИЙ СЛОЙ: ПАКИ, РИДЕР, НАСТРОЙКИ (DROP-DOWN OVERLAY) */
         .dropdown-overlay {
             position: absolute;
             top: 55px; left: 0; right: 0; bottom: 0;
@@ -125,12 +141,12 @@
             transition: all 0.3s ease; 
             opacity: 0; 
             transform: scale(0.8); 
-            pointer-events: none; /* Заблокирована по дефолту */
+            pointer-events: none;
         }
         .send-btn.active { 
             opacity: 1; 
             transform: scale(1); 
-            pointer-events: auto; /* Разблокирована */
+            pointer-events: auto; 
             animation: bluePulse 3s infinite ease-in-out;
         }
 
@@ -143,6 +159,17 @@
         .download-btn { display: block; padding: 8px; background: var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; transition: 0.2s; cursor: pointer; border: none; }
         .download-btn:hover { background: var(--cyan); color: #000; }
         .steam-btn { background: var(--grad) !important; color: #fff !important; }
+
+        /* ИНЖЕНЕРНЫЙ ОТСЕК НАСТРОЕК */
+        .settings-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 18px; border-radius: 20px; display: flex; flex-direction: column; gap: 14px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .setting-label { font-size: 13px; font-weight: 600; }
+        .setting-desc { font-size: 11px; color: var(--sub); margin-top: 2px; }
+        
+        .core-select, .core-switch-btn { background: #0d0e11; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; outline: none; cursor: pointer; }
+        .core-switch-btn.active { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 10px rgba(2, 182, 237, 0.1); }
+        
+        .warning-text { color: #ff4a4a; font-size: 11px; font-weight: bold; border-left: 2px solid #ff4a4a; padding-left: 8px; margin-top: 4px; display: none; animation: blink 1.5s infinite; }
 
         /* КУРАТОР ИСТОРИЙ И РИДЕР В МЕНЮ */
         .story-selector { display: flex; gap: 8px; margin-bottom: 12px; }
@@ -163,19 +190,19 @@
             width: 50px; height: 50px; border-radius: 50%; background: var(--bg); 
             border: 1px solid var(--purple); display: flex; align-items: center; justify-content: center; 
             font-size: 18px; cursor: pointer; transition: 0.2s; 
-            animation: purplePulse 4s infinite ease-in-out; /* Наш Пурпурный шлюз */
+            animation: purplePulse 4s infinite ease-in-out;
         }
         .neon-gate-icon:hover { transform: scale(1.08); border-color: var(--cyan); }
         .launch-btn { background: var(--grad); color: #fff; border: none; padding: 10px 20px; border-radius: 14px; font-weight: bold; font-size: 11px; cursor: pointer; }
 
-        /* ТУЛБАР ИИ РИДЕРА */
+        /* МАТЕРИАЛЬНЫЙ ТУЛБАР ТЕКСТА РИДЕРА С ФИКСИРОВАННЫМИ ЦВЕТАМИ М3 */
         .bubble-toolbar { position: absolute; display: none; background: rgba(30, 31, 40, 0.98); backdrop-filter: blur(10px); border: 1px solid var(--m3-surface-variant); border-radius: 16px; padding: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 1000; flex-direction: column; gap: 6px; min-width: 220px; transform: translate(-50%, -105%); }
         .toolbar-row { display: flex; align-items: center; gap: 4px; width: 100%; justify-content: center; }
-        .bubble-btn { background: transparent; border: none; color: var(--text); width: 28px; height: 28px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .bubble-btn { background: transparent; border: none; color: #e2e2e9; width: 28px; height: 28px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .bubble-btn:hover { background: var(--m3-surface-variant); color: var(--cyan); }
-        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; margin: 0 1px; }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; margin: 0 1px; border: 1px solid rgba(255,255,255,0.2); }
         .bubble-ai-menu { display: none; flex-direction: column; width: 100%; border-top: 1px solid var(--m3-surface-variant); margin-top: 4px; padding-top: 4px; }
-        .ai-menu-item { background: transparent; border: none; color: var(--text); text-align: left; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
+        .ai-menu-item { background: transparent; border: none; color: #e2e2e9; text-align: left; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
         .ai-menu-item:hover { background: var(--m3-surface-variant); color: var(--purple); }
         .ai-status { font-size: 11px; color: var(--purple); font-family: monospace; font-weight: bold; margin-top: 8px; display: none; text-align: center; animation: blink 1s infinite; }
 
@@ -202,23 +229,48 @@
 
 <div class="oracle-container">
     <div class="top-nav">
-        <div class="nav-logo-text">Core Node</div>
-        <button class="menu-trigger-btn" onclick="toggleDropdown()" id="menu-btn">Паки & Ридер 🌌</button>
+        <div class="nav-logo-text">Core Node v2.1</div>
+        <button class="menu-trigger-btn" onclick="toggleDropdown()" id="menu-btn">Паки & Ридер & Настройки 🌌</button>
     </div>
 
     <div id="dropdown-menu" class="dropdown-overlay">
         
-        <div class="section-title">Магазины Игр (Cats are Liquid)</div>
-        <div class="item-card" style="margin-bottom: 15px;">
-            <div class="item-name" style="color: var(--cyan);">A Better Place 1.3.7</div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-                <a href="https://play.google.com/store/apps/details?id=com.lastquarterstudios.catsareliquidabp" class="download-btn" target="_blank">🤖 Android — Google Play</a>
-                <a href="https://apps.apple.com/us/app/cats-are-liquid-abp/id1485934366" class="download-btn" target="_blank">🍏 iPhone / iOS — App Store</a>
-                <a href="https://store.steampowered.com/app/1188080/Cats_are_Liquid__A_Better_Place/" class="download-btn steam-btn" target="_blank">💻 Windows — Steam</a>
+        <div class="section-title">Инженерный Пульт Управления</div>
+        <div class="settings-box">
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Голос Оракула</div>
+                    <div class="setting-desc">Кто модулирует частоту ответов ядра</div>
+                </div>
+                <select id="voice-select" class="core-select">
+                    <option value="murzik">Мурзик (Помощница) 🐾</option>
+                    <option value="khakhmi">Хахми (Мужской вокал) 🎤</option>
+                    <option value="snezhinka">Снежинка (Женский вокал) ❄️</option>
+                    <option value="lamirk" selected>Ламирк (Главный Инженер) 🛠️</option>
+                </select>
+            </div>
+
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <div>
+                        <div class="setting-label">Сохранять чаты в памяти</div>
+                        <div class="setting-desc">Резервирование потоков в локальный кэш</div>
+                    </div>
+                    <button id="memory-btn" class="core-switch-btn active" onclick="toggleMemory()">ВКЛЮЧЕНО</button>
+                </div>
+                <div id="cache-warn" class="warning-text" style="display: block;">⚠️ ВНИМАНИЕ: Если вы очистите кэш или куки браузера, все сохранённые чаты будут навсегда уничтожены!</div>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <div class="setting-label">Цветовой Слой Ядра</div>
+                    <div class="setting-desc">По умолчанию установлена Тёмная Тема ЛМСХ</div>
+                </div>
+                <button id="theme-btn" class="core-switch-btn" onclick="toggleTheme()">ГЛУБОКИЙ КОСМОС (DARK)</button>
             </div>
         </div>
 
-        <div class="section-title">🔮 Kosmo Level AI Reader v2.0</div>
+        <div class="section-title">🔮 Kosmo Level AI Reader v2.1</div>
         <div class="story-selector">
             <button class="story-tab-btn active" id="tab-story1" onclick="loadStory(1)">Читать: Летание</button>
             <button class="story-tab-btn" id="tab-story2" onclick="loadStory(2)">Читать: Оракул Поток</button>
@@ -271,8 +323,8 @@
         <button class="bubble-btn" style="font-style: italic;" onclick="format('italic')">I</button>
         <button class="bubble-btn" style="text-decoration: underline;" onclick="format('underline')">U</button>
         <div style="width: 1px; height: 16px; background: var(--m3-surface-variant); margin: 0 4px;"></div>
-        <div class="color-dot" style="background: #adc6ff;" onclick="setCustomColor('#adc6ff')"></div>
-        <div class="color-dot" style="background: #e8bbf1;" onclick="setCustomColor('#e8bbf1')"></div>
+        <div class="color-dot" style="background: #adc6ff;" onclick="setCustomColor('#adc6ff')" title="Космический Синий"></div>
+        <div class="color-dot" style="background: #e8bbf1;" onclick="setCustomColor('#e8bbf1')" title="Неоновый Пурпур"></div>
         <div style="width: 1px; height: 16px; background: var(--m3-surface-variant); margin: 0 4px;"></div>
         <button class="bubble-btn" style="color: var(--m3-accent); font-weight: bold;" onclick="toggleAiSubmenu(event)">✨</button>
     </div>
@@ -285,32 +337,59 @@
 <script>
     const versions = ["1.0", "2.0", "2.2", "2.5", "2.8", "2.9", "3.0", "3.1", "3.2", "3.3", "3.3.1", "3.4"];
     const stories = {
-        1: `<p><b>Летание</b></p><p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p><p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--m3-primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>`,
+        1: `<p><b>Летание</b></p><p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p><p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: #adc6ff;"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>`,
         2: `<p><b>Вторжение Люми</b></p><p>Это было 21 Августа 2024 года. Люми спала, было 3:23. В 3:15 закончила Фиолетовая Кошка свою лабораторию. И полетела искать 4 рандомных крепко спящих Котят. Это город Кошкин-Хвост и там обитают многие жильцы котята и коты и кошки. Фиолетовая кошка уже с 2020 года сбежала в свою подземную нору и начала глубоко строить её. Полиция забила на это дело, так как они искали Фиолетовая кошку почти 5 месяцев после того как она сбежала. И она начала строить глубоко, примерно 200 м под землёй. Она строила 4 года это. И в ночь 21.08 она искала 4 добычи Разных Цветов. Но именно Люме ничего не рассказали. А друзьям хоть что то. Люми крепко всегда спит. Обычно она активная и она должна что то делать с этим. Но тут она ничего не поняла, боялась всего что она видела и прочее. Когда Люми прошла Лабиринт, она показалась в мрачной комнате, но чуть по светлее, она этого тоже не ожидала и даже тихонько спросила: “Эта комната стала светлее, или мне кажется?”. Затем она увидела оранжевое что-то, она случайно его коснулась и обожгла свою левую руку. Но потом она пошла дальше с мыслью что это всё Сон! Но она прошла так все первые комнаты и это не сон.</p>`
     };
 
     let isFirstMessage = true;
     let currentSavedSelection = null;
+    let isMemoryEnabled = true;
 
     const editor = document.getElementById('editor');
     const toolbar = document.getElementById('bubble-toolbar');
     const aiMenu = document.getElementById('bubble-ai-menu');
     const scrollBox = document.getElementById('scroll-box');
 
-    // КОРРЕКЦИЯ ОКОН: ВСПЛЫВАЮЩИЙ СЛОЙ
     function toggleDropdown() {
         const menu = document.getElementById('dropdown-menu');
         const btn = document.getElementById('menu-btn');
         if(menu.style.display === "flex") {
             menu.style.display = "none";
-            btn.innerText = "Паки & Ридер 🌌";
+            btn.innerText = "Паки & Ридер & Настройки 🌌";
         } else {
             menu.style.display = "flex";
             btn.innerText = "Закрыть Меню ❌";
         }
     }
 
-    // УМНАЯ ПРОВЕРКА КНОПКИ И ENTER (ЧЕК-ЛИСТ КЛЮЧ)
+    /* СКРИПТЫ НАСТРОЕК */
+    function toggleMemory() {
+        const btn = document.getElementById('memory-btn');
+        const warn = document.getElementById('cache-warn');
+        isMemoryEnabled = !isMemoryEnabled;
+        if(isMemoryEnabled) {
+            btn.innerText = "ВКЛЮЧЕНО";
+            btn.classList.add('active');
+            warn.style.display = "block";
+        } else {
+            btn.innerText = "ВЫКЛЮЧЕНО";
+            btn.classList.remove('active');
+            warn.style.display = "none";
+        }
+    }
+
+    function toggleTheme() {
+        const btn = document.getElementById('theme-btn');
+        document.body.classList.toggle('light-theme');
+        if(document.body.classList.contains('light-theme')) {
+            btn.innerText = "НЕОНОВЫЙ ВЗРЫВ (LIGHT)";
+            btn.classList.add('active');
+        } else {
+            btn.innerText = "ГЛУБОКИЙ КОСМОС (DARK)";
+            btn.classList.remove('active');
+        }
+    }
+
     function checkInput() {
         const inp = document.getElementById('user-input');
         const btn = document.getElementById('send-btn');
@@ -327,18 +406,16 @@
             if(inp.value.trim().length > 0) {
                 sendMsg();
             } else {
-                event.preventDefault(); // Блокируем пустой Enter
+                event.preventDefault();
             }
         }
     }
 
-    // ОТПРАВКА И УНИЧТОЖЕНИЕ ЗАГОЛОВКА
     function sendMsg() {
         const inp = document.getElementById('user-input');
         const val = inp.value.trim();
         if(!val) return;
 
-        // Если это первое сообщение — стираем заголовок "Что делаешь?" с экрана
         if(isFirstMessage) {
             document.getElementById('welcome-block').classList.add('hidden');
             isFirstMessage = false;
@@ -346,13 +423,22 @@
 
         appendMessage(val, 'user-msg');
         inp.value = "";
-        checkInput(); // Гасим кнопку обратно
+        checkInput();
 
         setTimeout(() => {
-            let reply = "Лог принят. Ядро Оракула обрабатывает поток данных.";
-            if(val.toLowerCase().includes("3.4")) reply = "Лог Космо 3.4 зафиксирован: Обнаружены следы интеграции шлюза video1 и заградительных неоновых слоев.";
+            const currentVoice = document.getElementById('voice-select').value;
+            let replyPrefix = "🤖 Ядро:";
+            
+            if(currentVoice === "murzik") replyPrefix = "🐾 Мурзик:";
+            else if(currentVoice === "khakhmi") replyPrefix = "🎤 Хахми:";
+            else if(currentVoice === "snezhinka") replyPrefix = "❄️ Снежинка:";
+            else if(currentVoice === "lamirk") replyPrefix = "🛠️ Ламирк:";
+
+            let reply = `${replyPrefix} Лог обработан. Поток данных стабилен в памяти устройства.`;
+            if(val.toLowerCase().includes("3.4")) reply = `${replyPrefix} Мониторинг Космо 3.4 активен. Обнаружена секретная активность на глубине 200м.`;
+            
             appendMessage(reply, 'ai-msg');
-        }, 400);
+        }, 500);
     }
 
     function appendMessage(text, type) {
@@ -376,7 +462,6 @@
         });
     }
 
-    /* РИДЕР ТЕКСТА И ВСПЛЫВАЮЩИЙ ТУЛБАР */
     function saveSelection() {
         const sel = window.getSelection();
         if (sel.rangeCount > 0) currentSavedSelection = sel.getRangeAt(0).cloneRange();
@@ -399,6 +484,7 @@
     });
 
     function format(command) { document.execCommand(command, false, null); editor.focus(); }
+    
     function setCustomColor(color) {
         if (!currentSavedSelection) return;
         const selection = window.getSelection();
@@ -406,6 +492,7 @@
         document.execCommand('foreColor', false, color);
         editor.focus();
     }
+    
     function toggleAiSubmenu(event) { event.stopPropagation(); aiMenu.style.display = aiMenu.style.display === 'flex' ? 'none' : 'flex'; }
     
     function injectAI(mode) {
@@ -413,7 +500,7 @@
         const loader = document.getElementById('ai-loading'); loader.style.display = 'block';
         const mods = {
             cinema: `<p><br><span style="color: var(--purple);"><b>[🚀 Кинематографичный Лор]:</b></span> Неоновые искры шлюзов поглотили Люми...</p>`,
-            madness: `<p><br><span style="color: #f9ffb3;"><b>[🔮 Generator Безумия]:</b></span> Система ЛМСХ взломана Фиолетовой Кошкой!</p>`
+            madness: `<p><br><span style="color: #ff4a4a;"><b>[🔮 Generator Безумия]:</b></span> Система ЛМСХ взломана Фиолетовой Кошкой!</p>`
         };
         setTimeout(() => {
             loader.style.display = 'none';
