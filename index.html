@@ -158,8 +158,8 @@
         .warning-text { color: #ff5252; font-size: 12px; font-weight: bold; border-left: 3px solid #ff5252; padding-left: 8px; margin-top: 6px; display: none; }
 
         /* РИДЕР БЕЗ СМАРТФОННЫХ ТУЛБАРОВ */
-        .story-selector { display: flex; gap: 8px; margin-bottom: 12px; }
-        .story-tab-btn { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--on-surface-variant); padding: 12px; border-radius: var(--radius-small); font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .story-selector { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
+        .story-tab-btn { flex: 1; min-width: 100px; background: var(--surface); border: 1px solid var(--border); color: var(--on-surface-variant); padding: 10px 6px; border-radius: var(--radius-small); font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .story-tab-btn.active { background: var(--primary-container); border-color: var(--primary); color: var(--on-primary-container); }
         .reader-inner-card { background: var(--surface); border-radius: var(--radius-medium); border: 1px solid var(--border); padding: 20px; }
         .story-container { max-height: 220px; overflow-y: auto; }
@@ -215,12 +215,12 @@
             <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
                 <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                     <div>
-                        <div class="setting-label">Сохранять чаты в памяти</div>
+                        <div class="setting-label">Сохранять чаты in-memory</div>
                         <div class="setting-desc">Резервирование потоков в локальный кэш</div>
                     </div>
                     <button id="memory-btn" class="core-switch-btn active" onclick="toggleMemory()">ВКЛЮЧЕНО</button>
                 </div>
-                <div id="cache-warn" class="warning-text" style="display: block;">⚠️ ВНИМАНИЕ: Если вы очистите кэш или куки браузера, все сохранённые чаты будут навсегда уничтожены!</div>
+                <div id="cache-warn" class="warning-text" style="display: block;">⚠️ ВНИМАНИЕ: Если вы очистите кэш браузера, логи будут уничтожены!</div>
             </div>
 
             <div class="setting-row">
@@ -234,8 +234,9 @@
 
         <div class="section-title">🔮 Kosmo Level AI Reader v2.3</div>
         <div class="story-selector">
-            <button class="story-tab-btn active" id="tab-story1" onclick="loadStory(1)">Читать: Летание</button>
-            <button class="story-tab-btn" id="tab-story2" onclick="loadStory(2)">Читать: Оракул Поток</button>
+            <button class="story-tab-btn active" id="tab-story1" onclick="loadStory(1)">Летание</button>
+            <button class="story-tab-btn" id="tab-story2" onclick="loadStory(2)">Оракул Поток</button>
+            <button class="story-tab-btn" id="tab-story3" onclick="loadStory(3)" style="border-color: var(--secondary); color: var(--secondary);">🔥 Побег от ЛМСХ</button>
         </div>
         <div class="reader-inner-card">
             <div class="story-container" id="scroll-box">
@@ -274,10 +275,17 @@
 </div>
 
 <script>
-    const versions = ["1.0", "2.0", "2.2", "2.5", "2.8", "2.9", "3.0", "3.1", "3.2", "3.3", "3.3.1", "3.4"];
+    const versions = ["1.0", "2.0", "2.2", "2.3", "2.5", "2.8", "2.9", "3.0", "3.1", "3.2", "3.3", "3.4"];
     const stories = {
-        1: `<p><b>Летание</b></p><p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p><p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>`,
-        2: `<p><b>Вторжение Люми</b></p><p>Это было 21 Августа 2024 года. Люми спала... Фиолетовая кошка уже с 2020 года сбежала в свою подземную нору, примерно 200 м под землёй...</p>`
+        1: `<p><b>Летание</b></p><p>Люми зашла в портал. И оказалась в других цветах. Затем зашла in портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p><p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>`,
+        2: `<p><b>Вторжение Люми</b></p><p>Это было 21 Августа 2024 года. Люми спала... Фиолетовая кошка уже с 2020 года сбежала в свою подземную нору, примерно 200 м под землёй...</p>`,
+        3: `<p><b>🚨 Хроники Секретного Пака: Побег из Лаборатории ЛМСХ</b></p>
+            <p><b>Room 1 (Spawn):</b> Люми открывает глаза в экспериментальном боксе. Портал меняет цвета окружения, активируя инверсию спектра. Внезапно гравитационные датчики отключаются, и Люми получает способность летать!</p>
+            <p><b>Room 2 (Lab):</b> Главный инженер Ламирк запускает диагностику ядра. Комната забита датчиками движения и ClickDetector-ми автоматики. Чтобы пройти дальше, нужно маневрировать в воздухе, не касаясь сканирующих лазеров на полу.</p>
+            <p><b>Room 3 & Room 4:</b> Внутренние шлюзы безопасности. Перехвачено экстренное уведомление от Мурзики (Верной Помощницы): <i>«Внимание! Зафиксирован всплеск фиолетовой энергии на глубине 200 метров!»</i>. Тяжелые гермодвери начинают закрываться.</p>
+            <p><b>Room 5 & Room 6:</b> Аварийный сектор. Напряжение падает. Настенная адресная LED-лента перегружена, на середине цепи возникает физическая трещина! Дальше разрыва горят всего 8 светодиодов, погружая коридоры во мрак.</p>
+            <p><b>Room 7 (Финал):</b> Предел Лаборатории ЛМСХ. Люми оказывается перед гигантским оранжевым коридором, заполненным кристаллами-шипами. За звуковым барьером отчетливо слышны голоса Хахми и Снежинки. Путь назад отрезан. Зажав пусковую кнопку, Люми делает шаг навстречу 1 NEON LEVEL и твердо произносит: <b>«В любом случае я смогу себя контролировать»</b>...</p>
+            <p style="color: var(--secondary); font-weight: bold; text-align: center; margin-top: 15px;">🚀 АНОНС ЭКСКЛЮЗИВА К РЕЛИЗУ LMSH 2.0 (ИЮНЬ 2026)!</p>`
     };
 
     let isFirstMessage = true;
@@ -340,7 +348,6 @@
         btn.classList.toggle('active', inp.value.trim().length > 0);
     }
 
-    /* ИСПРАВЛЕННЫЙ ОБРАБОТЧИК ENTER: Нажатие предотвращает создание новых строк и корректно отправляет лог */
     function handleKeyPress(event) {
         if (event.key === 'Enter') {
             event.preventDefault(); 
@@ -430,6 +437,7 @@
     function loadStory(id) {
         document.getElementById('tab-story1').classList.toggle('active', id === 1);
         document.getElementById('tab-story2').classList.toggle('active', id === 2);
+        document.getElementById('tab-story3').classList.toggle('active', id === 3);
         editor.innerHTML = stories[id]; scrollBox.scrollTop = 0;
     }
 
