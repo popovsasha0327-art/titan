@@ -33,8 +33,8 @@
         /* ГЛАВНЫЙ КОНТЕЙНЕР ОРАКУЛА */
         .oracle-container { 
             width: 100%; 
-            max-width: 750px; /* Немного увеличим ширину для ПК */
-            height: 85vh;     /* Занимает 85% от высоты любого экрана */
+            max-width: 750px; 
+            height: 85vh;     
             background: rgba(23, 24, 31, 0.95); 
             backdrop-filter: blur(25px); 
             border: 1px solid var(--border); 
@@ -45,14 +45,52 @@
             overflow: hidden; 
             box-shadow: 0 12px 40px rgba(0,0,0,0.7); 
             animation: boot 0.5s ease-out; 
-}
-        
-        .top-nav { padding: 16px 24px; display: flex; justify-content: flex-end; gap: 10px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
-        .toggle-mode-btn { background: var(--border); border: 1px solid rgba(255,255,255,0.05); color: var(--cyan); padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
-        .toggle-mode-btn:hover { border-color: var(--cyan); }
+        }
+
+        /* НАВИГАЦИЯ С ВСПЛЫВАЮЩИМ МЕНЮ */
+        .top-nav { padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); z-index: 10; }
+        .nav-logo-text { font-weight: 900; font-size: 14px; letter-spacing: 1.5px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
+        .menu-trigger-btn { background: var(--border); border: 1px solid rgba(255,255,255,0.05); color: var(--cyan); padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
+        .menu-trigger-btn:hover { border-color: var(--cyan); box-shadow: 0 0 10px rgba(2, 182, 237, 0.2); }
+
+        /* ВСПЛЫВАЮЩИЙ СЛОЙ: ПАКИ И ИСТОРИИ (DROP-DOWN OVERLAY) */
+        .dropdown-overlay {
+            position: absolute;
+            top: 55px; left: 0; right: 0; bottom: 0;
+            background: rgba(13, 14, 17, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 99;
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+
+        /* ДИНАМИЧЕСКАЯ СТАРТОВАЯ ЗОНА ПРИВЕТСТВИЯ */
+        .welcome-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            gap: 16px;
+            padding: 20px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: scale(1);
+        }
+        .welcome-zone.hidden {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+            height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            flex-grow: 0;
+        }
 
         /* ЖИДКИЙ ЛОГОТИП */
-        .header { padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .blob-container { position: relative; width: 120px; height: 40px; background: #010103; filter: blur(6px) contrast(20); overflow: hidden; display: flex; align-items: center; justify-content: center; border-radius: 20px; }
         .blob { position: absolute; width: 20px; height: 20px; border-radius: 50%; }
         .cyan-blob { background: #02b6ed; left: 25px; animation: mergeLeft 6s infinite ease-in-out; }
@@ -61,254 +99,197 @@
         @keyframes mergeLeft { 0%, 100% { transform: translateX(0); } 30%, 70% { transform: translateX(20px); } }
         @keyframes mergeRight { 0%, 100% { transform: translateX(0); } 30%, 70% { transform: translateX(-20px); } }
 
-        .logo-text { font-weight: 900; font-size: 18px; letter-spacing: 3px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
-
-        /* ЭКРАНЫ ИНТЕРФЕЙСА */
-        #chat-screen, #packs-screen { 
-        display: flex; 
-        flex-direction: column; 
-        flex-grow: 1; 
-        height: 100%; /* Теперь они гибко заполняют всю высоту контейнера */
-        overflow: hidden; 
-}
-        #packs-screen { 
-        display: none; 
-        padding: 24px; 
-        overflow-y: auto; 
-}
+        .derzky-title { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff 30%, var(--sub) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin: 0; animation: neonPulse 2s infinite ease-in-out; }
 
         /* ЧАТ-ПОТОКИ */
+        #chat-screen { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; position: relative; }
         .chat-flow-box { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
         .msg { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 80%; line-height: 1.5; animation: slideIn 0.2s ease; word-wrap: break-word; }
         .ai-msg { background: rgba(255, 255, 255, 0.03); align-self: flex-start; border: 1px solid var(--border); }
         .user-msg { background: var(--grad); color: #fff; align-self: flex-end; font-weight: 500; }
 
-        .input-box { padding: 16px; display: flex; gap: 10px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border); }
-        input { flex: 1; background: #0d0e11; border: 1px solid var(--border); border-radius: 14px; padding: 12px; color: #fff; outline: none; font-size: 14px; }
+        /* СМАРТ ТЕКСТОВОЕ ПОЛЕ */
+        .input-box { padding: 16px; display: flex; gap: 10px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border); align-items: center; }
+        input { flex: 1; background: #0d0e11; border: 1px solid var(--border); border-radius: 14px; padding: 12px; color: #fff; outline: none; font-size: 14px; transition: 0.2s; }
         input:focus { border-color: var(--cyan); }
-        .send-btn { background: var(--grad); border: none; border-radius: 14px; width: 48px; color: white; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .send-btn:hover { opacity: 0.9; }
+        
+        .send-btn { 
+            background: var(--grad); 
+            border: none; 
+            border-radius: 14px; 
+            width: 48px; 
+            height: 43px;
+            color: white; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: all 0.3s ease; 
+            opacity: 0; 
+            transform: scale(0.8); 
+            pointer-events: none; /* Заблокирована по дефолту */
+        }
+        .send-btn.active { 
+            opacity: 1; 
+            transform: scale(1); 
+            pointer-events: auto; /* Разблокирована */
+            animation: bluePulse 3s infinite ease-in-out;
+        }
 
-        /* СЕТКА ССЫЛОК И ПАКОВ */
-        .section-title { font-size: 11px; font-weight: 900; color: var(--cyan); text-transform: uppercase; margin: 24px 0 12px; letter-spacing: 1px; border-left: 3px solid var(--purple); padding-left: 10px; }
+        /* ЭЛЕМЕНТЫ СЕТКИ В ДРОПДАУНЕ */
+        .section-title { font-size: 11px; font-weight: 900; color: var(--cyan); text-transform: uppercase; margin: 20px 0 12px; letter-spacing: 1px; border-left: 3px solid var(--purple); padding-left: 10px; }
         .packs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .item-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 14px; border-radius: 16px; transition: 0.2s; }
-        .item-card:hover { border-color: var(--cyan); background: rgba(2, 182, 237, 0.02); }
+        .item-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 14px; border-radius: 16px; }
         .item-name { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; }
 
         .download-btn { display: block; padding: 8px; background: var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; transition: 0.2s; cursor: pointer; border: none; }
         .download-btn:hover { background: var(--cyan); color: #000; }
         .steam-btn { background: var(--grad) !important; color: #fff !important; }
 
-        /* КУРАТОР ИСТОРИЙ И РИДЕР */
+        /* КУРАТОР ИСТОРИЙ И РИДЕР В МЕНЮ */
         .story-selector { display: flex; gap: 8px; margin-bottom: 12px; }
         .story-tab-btn { flex: 1; background: var(--border); border: 1px solid transparent; color: var(--sub); padding: 10px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .story-tab-btn.active { background: rgba(2, 182, 237, 0.1); border-color: var(--cyan); color: var(--cyan); }
-        
-        .reader-inner-card { background: #0d0e11; border-radius: 20px; border: 1px solid var(--border); padding: 20px; position: relative; margin-bottom: 20px; }
-        .story-container { max-height: 220px; overflow-y: auto; padding-right: 4px; }
-        .story-content { font-size: 15px; line-height: 1.6; outline: none; text-align: justify; color: var(--text); }
-        .story-content p { margin-bottom: 12px; }
 
-        /* ПУЗЫРЬ ФОРМАТИРОВАНИЯ ТЕКСТА */
+        .reader-inner-card { background: #0d0e11; border-radius: 20px; border: 1px solid var(--border); padding: 20px; position: relative; margin-bottom: 20px; }
+        .story-container { max-height: 200px; overflow-y: auto; }
+        .story-content { font-size: 14px; line-height: 1.6; outline: none; text-align: justify; color: var(--text); }
+
+        /* ПУЛЬТ ДЛЯ ПОДКАСТА С АНИМАЦИЕЙ ШЛЮЗА */
+        .io-stream-container { background: #0d0e11; border: 1px solid var(--purple); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 20px; }
+        .io-stream-header { background: rgba(0,0,0,0.4); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .io-premiere-tag { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 12px; font-weight: 900; letter-spacing: 1.5px; }
+        .audio-link-body { padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        
+        .neon-gate-icon { 
+            width: 50px; height: 50px; border-radius: 50%; background: var(--bg); 
+            border: 1px solid var(--purple); display: flex; align-items: center; justify-content: center; 
+            font-size: 18px; cursor: pointer; transition: 0.2s; 
+            animation: purplePulse 4s infinite ease-in-out; /* Наш Пурпурный шлюз */
+        }
+        .neon-gate-icon:hover { transform: scale(1.08); border-color: var(--cyan); }
+        .launch-btn { background: var(--grad); color: #fff; border: none; padding: 10px 20px; border-radius: 14px; font-weight: bold; font-size: 11px; cursor: pointer; }
+
+        /* ТУЛБАР ИИ РИДЕРА */
         .bubble-toolbar { position: absolute; display: none; background: rgba(30, 31, 40, 0.98); backdrop-filter: blur(10px); border: 1px solid var(--m3-surface-variant); border-radius: 16px; padding: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 1000; flex-direction: column; gap: 6px; min-width: 220px; transform: translate(-50%, -105%); }
         .toolbar-row { display: flex; align-items: center; gap: 4px; width: 100%; justify-content: center; }
         .bubble-btn { background: transparent; border: none; color: var(--text); width: 28px; height: 28px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .bubble-btn:hover { background: var(--m3-surface-variant); color: var(--cyan); }
-        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: 0.1s; margin: 0 1px; }
-        .color-dot:hover { transform: scale(1.2); }
-
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; margin: 0 1px; }
         .bubble-ai-menu { display: none; flex-direction: column; width: 100%; border-top: 1px solid var(--m3-surface-variant); margin-top: 4px; padding-top: 4px; }
         .ai-menu-item { background: transparent; border: none; color: var(--text); text-align: left; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
         .ai-menu-item:hover { background: var(--m3-surface-variant); color: var(--purple); }
         .ai-status { font-size: 11px; color: var(--purple); font-family: monospace; font-weight: bold; margin-top: 8px; display: none; text-align: center; animation: blink 1s infinite; }
 
-        /* ПУЛЬТ ДЛЯ ПОДКАСТА LMSH I/O */
-        .io-stream-container { background: #0d0e11; border: 1px solid var(--purple); border-radius: 20px; overflow: hidden; box-shadow: 0 6px 20px rgba(175, 82, 222, 0.1); display: flex; flex-direction: column; margin-top: 15px; }
-        .io-stream-header { background: rgba(0,0,0,0.4); padding: 10px 15px; text-align: center; border-bottom: 1px solid var(--border); }
-        .io-premiere-tag { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; }
-        .io-status-badge { font-family: monospace; font-size: 9px; color: #34c759; font-weight: bold; }
-        .audio-link-body { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .neon-gate-icon { width: 50px; height: 50px; border-radius: 50%; background: var(--bg); border: 1px solid var(--purple); display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 15px rgba(175, 82, 222, 0.2); cursor: pointer; transition: 0.2s; }
-        .neon-gate-icon:hover { transform: scale(1.05); border-color: var(--cyan); box-shadow: 0 0 15px rgba(2, 182, 237, 0.4); }
-        .launch-btn { background: var(--grad); color: #fff; border: none; padding: 10px 20px; border-radius: 14px; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.2s; }
-        .launch-btn:hover { opacity: 0.9; }
-
+        /* PULSE ANIMATIONS ЧЕК-ЛИСТА */
+        @keyframes bluePulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(2, 182, 237, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(2, 182, 237, 0.8); }
+        }
+        @keyframes purplePulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(230, 12, 237, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 28px rgba(230, 12, 237, 0.8); transform: scale(1.03); }
+        }
+        @keyframes neonPulse {
+            0%, 100% { opacity: 0.95; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+            50% { opacity: 1; text-shadow: 0 0 20px rgba(2, 182, 237, 0.2); }
+        }
         @keyframes boot { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes blink { 50% { opacity: 0.3; } }
-        /* Добавь этот кусок внутрь <style> */
-
-/* Анимация пульсации для Голубого ядра (Быстрый Помощник) */
-@keyframes bluePulse {
-  0% {
-    box-shadow: 0 0 15px rgba(2, 182, 237, 0.6), inset 0 0 10px rgba(2, 182, 237, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(2, 182, 237, 0.9), inset 0 0 20px rgba(2, 182, 237, 0.6);
-  }
-  100% {
-    box-shadow: 0 0 15px rgba(2, 182, 237, 0.6), inset 0 0 10px rgba(2, 182, 237, 0.4);
-  }
-}
-
-/* Анимация для Пурпурного шлюза (Оракул) */
-@keyframes purplePulse {
-  0% {
-    box-shadow: 0 0 15px rgba(230, 12, 237, 0.6);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(230, 12, 237, 0.9);
-    transform: scale(1.02); /* Шлюз слегка расширяется, как бы наплывая */
-  }
-  100% {
-    box-shadow: 0 0 15px rgba(230, 12, 237, 0.6);
-    transform: scale(1);
-  }
-}
-
-/* Применяем анимацию к классам кнопок из select_moment.html */
-.video-gate {
-  animation: bluePulse 3s infinite ease-in-out;
-}
-
-.audio-gate {
-  animation: purplePulse 4s infinite ease-in-out;
-}
     </style>
 </head>
 <body>
 
 <div class="oracle-container">
     <div class="top-nav">
-        <button class="toggle-mode-btn" onclick="toggleMode()" id="mode-btn">Режим: Паки</button>
+        <div class="nav-logo-text">Core Node</div>
+        <button class="menu-trigger-btn" onclick="toggleDropdown()" id="menu-btn">Паки & Ридер 🌌</button>
     </div>
 
-    <!-- Жидкое капельное лого -->
-    <div class="header">
-        <div class="blob-container">
-            <div class="blob cyan-blob"></div>
-            <div class="blob purple-blob"></div>
-        </div>
-        <div class="logo-text">Oracle AI 2.0</div>
-    </div>
-
-    <!-- ЭКРАН 1: ЧАТ СИСТЕМА -->
-    <div id="chat-screen">
-        <div id="chat-flow" class="chat-flow-box">
-            <div class="msg ai-msg">Оракул 2.0 успешно развернут. Конфигурация ядра стабильна. Жду твоих команд, Инженер.</div>
-        </div>
-        <div class="input-box">
-            <input type="text" id="user-input" placeholder="Введите ваш запрос к ядру ЛМСХ..." onkeypress="if(event.key==='Enter') sendMsg()">
-            <button class="send-btn" onclick="sendMsg()">➔</button>
-        </div>
-    </div>
-
-    <!-- ЭКРАН 2: АРХИВ ПАКОВ И AI READER -->
-    <div id="packs-screen">
+    <div id="dropdown-menu" class="dropdown-overlay">
         
-        <!-- ОФИЦИАЛЬНЫЙ МАГАЗИН КНОПОК -->
-        <div class="section-title">Официальные Магазины Игр</div>
-        <div class="item-card" style="margin-bottom: 20px;">
-            <div class="item-name" style="color: var(--cyan); font-size: 14px;">A Better Place 1.3.7</div>
-            <div style="font-size: 11px; opacity: 0.6; margin-bottom: 12px;">Установка официального релиза без багов ссылок облачных дисков:</div>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <a href="https://play.google.com/store/apps/details?id=com.lastquarterstudios.catsareliquidabp" class="download-btn" target="_blank" style="text-align: left; padding-left: 15px;">🤖 Android — Google Play</a>
-                <a href="https://apps.apple.com/us/app/cats-are-liquid-abp/id1485934366" class="download-btn" target="_blank" style="text-align: left; padding-left: 15px;">🍏 iPhone / iOS — App Store</a>
-                <a href="https://store.steampowered.com/app/1188080/Cats_are_Liquid__A_Better_Place/" class="download-btn steam-btn" target="_blank" style="text-align: left; padding-left: 15px;">💻 Windows — Steam</a>
+        <div class="section-title">Магазины Игр (Cats are Liquid)</div>
+        <div class="item-card" style="margin-bottom: 15px;">
+            <div class="item-name" style="color: var(--cyan);">A Better Place 1.3.7</div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <a href="https://play.google.com/store/apps/details?id=com.lastquarterstudios.catsareliquidabp" class="download-btn" target="_blank">🤖 Android — Google Play</a>
+                <a href="https://apps.apple.com/us/app/cats-are-liquid-abp/id1485934366" class="download-btn" target="_blank">🍏 iPhone / iOS — App Store</a>
+                <a href="https://store.steampowered.com/app/1188080/Cats_are_Liquid__A_Better_Place/" class="download-btn steam-btn" target="_blank">💻 Windows — Steam</a>
             </div>
         </div>
 
-        <!-- ИИ РИДЕР ХРОНИК С ДВУМЯ ИСТОРИЯМИ -->
         <div class="section-title">🔮 Kosmo Level AI Reader v2.0</div>
-        
         <div class="story-selector">
             <button class="story-tab-btn active" id="tab-story1" onclick="loadStory(1)">Читать: Летание</button>
             <button class="story-tab-btn" id="tab-story2" onclick="loadStory(2)">Читать: Оракул Поток</button>
         </div>
-
         <div class="reader-inner-card">
             <div class="story-container" id="scroll-box">
-                <div class="story-content" id="editor" contenteditable="true" spellcheck="false">
-                    <!-- Сюда скрипт вставит дефолтную историю -->
-                </div>
+                <div class="story-content" id="editor" contenteditable="true" spellcheck="false"></div>
                 <div id="ai-loading" class="ai-status">🔮 ОРАКУЛ: КОРРЕКЦИЯ СЛОЯ ХРОНИК...</div>
             </div>
         </div>
 
-        <!-- ПУЛЬТ ПОДКАСТА NOTEBOOK_LM -->
         <div class="io-stream-container">
             <div class="io-stream-header">
                 <div class="io-premiere-tag">⚡ LMSH I/O PODCAST LIVE ⚡</div>
-                <div class="io-status-badge">🪐 TITAN SYSTEM: РАСШИФРОВКА АКТИВНА</div>
+                <div style="font-family: monospace; font-size: 9px; color: #34c759;">ONLINE</div>
             </div>
             <div class="audio-link-body">
                 <div class="neon-gate-icon" onclick="openPodcast()" title="Повернуть Ключ">🔑)</div>
-                <p style="font-size: 12px; color: var(--sub); text-align: center; line-height: 1.5; margin: 0;">
-                    Внешний лог дешифрован! Безопасный шлюз готов транслировать экстренный <b>12-минутный</b> выпуск ИИ NotebookLM, синхронизированный с Kosmo 3.4.
-                </p>
+                <p style="font-size: 11px; color: var(--sub); text-align: center; margin: 0;">Синхронизированный 12-минутный лог ИИ дешифрован.</p>
                 <button class="launch-btn" onclick="openPodcast()">Открыть Поток Оракула 🛸</button>
             </div>
         </div>
 
-        <!-- АРХИВЫ С ОБНОВЛЕНИЯМИ (ПОЛНЫЙ МАССИВ) -->
-        <div class="section-title">Паки Kosmo Level</div>
+        <div class="section-title">Паки Kosmo Level (Fast Download)</div>
         <div class="packs-grid" id="packs-list"></div>
+    </div>
 
-        <div class="section-title">Preview & Спец-билды</div>
-        <div class="packs-grid">
-            <div class="item-card"><div class="item-name">Kosmo Level 3.3 Beta</div><a href="https://oracle-ai-pro.github.io/oracle/packs/Kosmo_Level_3.3_Beta.worldpack" class="download-btn" download>Скачать</a></div>
-            <div class="item-card"><div class="item-name">Traitor Level 2.2</div><a href="https://oracle-ai-pro.github.io/oracle/packs/Traitor_Level_2.2.worldpack" class="download-btn" download>Скачать</a></div>
+    <div id="chat-screen">
+        
+        <div id="welcome-block" class="welcome-zone">
+            <div class="blob-container">
+                <div class="blob cyan-blob"></div>
+                <div class="blob purple-blob"></div>
+            </div>
+            <h1 class="derzky-title">Что делаешь?</h1>
+        </div>
+
+        <div id="chat-flow" class="chat-flow-box"></div>
+
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="Введите ваш запрос к ядру ЛМСХ..." oninput="checkInput()" onkeypress="handleKeyPress(event)">
+            <button id="send-btn" class="send-btn" onclick="sendMsg()">➔</button>
         </div>
     </div>
 </div>
 
-<!-- ВСПЛЫВАЮЩИЙ МАТЕРИАЛЬНЫЙ ПУЗЫРЬ ТУЛБАРА РИДЕРА -->
 <div id="bubble-toolbar" class="bubble-toolbar" onmousedown="event.preventDefault()">
     <div class="toolbar-row">
         <button class="bubble-btn" style="font-weight: bold;" onclick="format('bold')">B</button>
         <button class="bubble-btn" style="font-style: italic;" onclick="format('italic')">I</button>
         <button class="bubble-btn" style="text-decoration: underline;" onclick="format('underline')">U</button>
         <div style="width: 1px; height: 16px; background: var(--m3-surface-variant); margin: 0 4px;"></div>
-        
         <div class="color-dot" style="background: #adc6ff;" onclick="setCustomColor('#adc6ff')"></div>
-        <div class="color-dot" style="background: #bbf1c8;" onclick="setCustomColor('#bbf1c8')"></div>
-        <div class="color-dot" style="background: #ffbcaa;" onclick="setCustomColor('#ffbcaa')"></div>
         <div class="color-dot" style="background: #e8bbf1;" onclick="setCustomColor('#e8bbf1')"></div>
-        <div class="color-dot" style="background: #f9ffb3;" onclick="setCustomColor('#f9ffb3')"></div>
-        
         <div style="width: 1px; height: 16px; background: var(--m3-surface-variant); margin: 0 4px;"></div>
         <button class="bubble-btn" style="color: var(--m3-accent); font-weight: bold;" onclick="toggleAiSubmenu(event)">✨</button>
     </div>
-
     <div id="bubble-ai-menu" class="bubble-ai-menu">
         <button class="ai-menu-item" onclick="injectAI('cinema')">🚀 Кинематографичный Лор</button>
-        <button class="ai-menu-item" onclick="injectAI('crypto')">🛡️ Шифрование Оракула</button>
-        <button class="ai-menu-item" onclick="injectAI('cats')">🎭 Эмоции Кошек</button>
-        <button class="ai-menu-item" onclick="injectAI('clear')">⚡ Макс. Понятность</button>
         <button class="ai-menu-item" onclick="injectAI('madness')">🔮 Генератор Безумия 3.3</button>
     </div>
 </div>
 
 <script>
-    // Полный обновленный массив паков по твоей спецификации
     const versions = ["1.0", "2.0", "2.2", "2.5", "2.8", "2.9", "3.0", "3.1", "3.2", "3.3", "3.3.1", "3.4"];
-    
-    // База данных наших двух историй для кнопок "Читать"
     const stories = {
-        1: `
-            <p><b>Летание</b></p>
-            <p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p> 
-            <p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--m3-primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>
-        `,
-        2: `
-            <p><b>Вторжение Люми</b></p>
-            <p>Это было 21 Августа 2024 года. Люми спала, было 3:23. В 3:15 закончила Фиолетовая Кошка свою лабораторию. И полетела искать 4 рандомных крепко спящих Котят. Это город Кошкин-Хвост и там обитают многие жильцы котята и коты и кошки. Фиолетовая кошка уже с 2020 года сбежала в свою подземную нору и начала глубоко строить её. Полиция забила на это дело, так как они искали Фиолетовую кошку почти 5 месяцев после того как она сбежала. И она начала строить глубоко, примерно 200 м под землёй. Она строила 4 года это. И в ночь 21.08 она искала 4 добычи Разных Цветов. Но именно Люме ничего не рассказали. А друзьям хоть что то. Люми крепко всегда спит. Обычно она активная и она должна что то делать с этим. Но тут она ничего не поняла, боялась всего что она видела и прочее. Когда Люми прошла Лабиринт, она показалась в мрачной комнате, но чуть по светлее, она этого тоже не ожидала и даже тихонько спросила: “Эта комната стала светлее, или мне кажется?”. Затем она увидела оранжевое что-то, она случайно его коснулась и обожгла свою левую руку. Но потом она пошла дальше с мыслью что это всё Сон! Но она прошла так все первые комнаты и это не сон.</p>
-        `
+        1: `<p><b>Летание</b></p><p>Люми зашла в портал. И оказалась в других цветах. Затем зашла в портал и получила дополнительную способность, Летать. Она научилась летать и сильно удивилась. Во второй комнате. Она решала головоломки.</p><p>А в конце она услышала своих друзей, только странно было то, что между друзьями и ней был <span style="color: var(--m3-primary);"><b>1 NEON LEVEL!</b></span> И она сказала важную фразу: <b>«В любом случае я смогу себя контролировать»</b>, запомните эту фразу...</p>`,
+        2: `<p><b>Вторжение Люми</b></p><p>Это было 21 Августа 2024 года. Люми спала, было 3:23. В 3:15 закончила Фиолетовая Кошка свою лабораторию. И полетела искать 4 рандомных крепко спящих Котят. Это город Кошкин-Хвост и там обитают многие жильцы котята и коты и кошки. Фиолетовая кошка уже с 2020 года сбежала в свою подземную нору и начала глубоко строить её. Полиция забила на это дело, так как они искали Фиолетовая кошку почти 5 месяцев после того как она сбежала. И она начала строить глубоко, примерно 200 м под землёй. Она строила 4 года это. И в ночь 21.08 она искала 4 добычи Разных Цветов. Но именно Люме ничего не рассказали. А друзьям хоть что то. Люми крепко всегда спит. Обычно она активная и она должна что то делать с этим. Но тут она ничего не поняла, боялась всего что она видела и прочее. Когда Люми прошла Лабиринт, она показалась в мрачной комнате, но чуть по светлее, она этого тоже не ожидала и даже тихонько спросила: “Эта комната стала светлее, или мне кажется?”. Затем она увидела оранжевое что-то, она случайно его коснулась и обожгла свою левую руку. Но потом она пошла дальше с мыслью что это всё Сон! Но она прошла так все первые комнаты и это не сон.</p>`
     };
 
-    let currentScreen = "chat";
+    let isFirstMessage = true;
     let currentSavedSelection = null;
 
     const editor = document.getElementById('editor');
@@ -316,53 +297,62 @@
     const aiMenu = document.getElementById('bubble-ai-menu');
     const scrollBox = document.getElementById('scroll-box');
 
-    function toggleMode() {
-        const chatScreen = document.getElementById('chat-screen');
-        const packsScreen = document.getElementById('packs-screen');
-        const btn = document.getElementById('mode-btn');
-
-        if(currentScreen === "chat") {
-            chatScreen.style.display = "none"; packsScreen.style.display = "flex";
-            btn.innerText = "Режим: Оракул"; currentScreen = "packs";
+    // КОРРЕКЦИЯ ОКОН: ВСПЛЫВАЮЩИЙ СЛОЙ
+    function toggleDropdown() {
+        const menu = document.getElementById('dropdown-menu');
+        const btn = document.getElementById('menu-btn');
+        if(menu.style.display === "flex") {
+            menu.style.display = "none";
+            btn.innerText = "Паки & Ридер 🌌";
         } else {
-            chatScreen.style.display = "flex"; packsScreen.style.display = "none";
-            btn.innerText = "Режим: Паки"; currentScreen = "chat";
+            menu.style.display = "flex";
+            btn.innerText = "Закрыть Меню ❌";
         }
     }
 
-    // Загрузка выбранной истории по кнопке "Читать"
-    function loadStory(id) {
-        document.getElementById('tab-story1').classList.toggle('active', id === 1);
-        document.getElementById('tab-story2').classList.toggle('active', id === 2);
-        editor.innerHTML = stories[id];
-        scrollBox.scrollTop = 0;
+    // УМНАЯ ПРОВЕРКА КНОПКИ И ENTER (ЧЕК-ЛИСТ КЛЮЧ)
+    function checkInput() {
+        const inp = document.getElementById('user-input');
+        const btn = document.getElementById('send-btn');
+        if(inp.value.trim().length > 0) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
     }
 
-    // Генерация паков с использованием точного абсолютного пути GitHub Pages
-    function renderPacks() {
-        const list = document.getElementById('packs-list');
-        list.innerHTML = "";
-        versions.forEach(v => {
-            list.innerHTML += `
-                <div class="item-card">
-                    <div class="item-name">Kosmo Level ${v}</div>
-                    <a href="https://oracle-ai-pro.github.io/oracle/packs/Kosmo_Level_${v}.worldpack" class="download-btn" download>Скачать</a>
-                </div>`;
-        });
+    function handleKeyPress(event) {
+        if(event.key === 'Enter') {
+            const inp = document.getElementById('user-input');
+            if(inp.value.trim().length > 0) {
+                sendMsg();
+            } else {
+                event.preventDefault(); // Блокируем пустой Enter
+            }
+        }
     }
 
+    // ОТПРАВКА И УНИЧТОЖЕНИЕ ЗАГОЛОВКА
     function sendMsg() {
         const inp = document.getElementById('user-input');
-        const val = inp.value.trim(); if(!val) return;
+        const val = inp.value.trim();
+        if(!val) return;
 
-        appendMessage(val, 'user-msg'); inp.value = "";
+        // Если это первое сообщение — стираем заголовок "Что делаешь?" с экрана
+        if(isFirstMessage) {
+            document.getElementById('welcome-block').classList.add('hidden');
+            isFirstMessage = false;
+        }
+
+        appendMessage(val, 'user-msg');
+        inp.value = "";
+        checkInput(); // Гасим кнопку обратно
 
         setTimeout(() => {
-            let reply = "Запрос обработан. База ядра ЛМСХ синхронизирует данные.";
-            if(val.toLowerCase().includes("3.4")) reply = "Лог Космо 3.4: Обнаружены следы интеграции шлюза video1 и заградительных неоновых слоев.";
-            if(val.toLowerCase().includes("летание")) reply = "Анализ хроники «Летание»: Новая способность Люми зафиксирована в системе AI Reader.";
+            let reply = "Лог принят. Ядро Оракула обрабатывает поток данных.";
+            if(val.toLowerCase().includes("3.4")) reply = "Лог Космо 3.4 зафиксирован: Обнаружены следы интеграции шлюза video1 и заградительных неоновых слоев.";
             appendMessage(reply, 'ai-msg');
-        }, 500);
+        }, 400);
     }
 
     function appendMessage(text, type) {
@@ -371,7 +361,22 @@
         d.innerText = text; flow.appendChild(d); flow.scrollTop = flow.scrollHeight;
     }
 
-    /* СКРИПТЫ УПРАВЛЕНИЯ AI READER */
+    function loadStory(id) {
+        document.getElementById('tab-story1').classList.toggle('active', id === 1);
+        document.getElementById('tab-story2').classList.toggle('active', id === 2);
+        editor.innerHTML = stories[id];
+        scrollBox.scrollTop = 0;
+    }
+
+    function renderPacks() {
+        const list = document.getElementById('packs-list');
+        list.innerHTML = "";
+        versions.forEach(v => {
+            list.innerHTML += `<div class="item-card"><div class="item-name">Kosmo Level ${v}</div><a href="https://oracle-ai-pro.github.io/oracle/packs/Kosmo_Level_${v}.worldpack" class="download-btn" download>Скачать</a></div>`;
+        });
+    }
+
+    /* РИДЕР ТЕКСТА И ВСПЛЫВАЮЩИЙ ТУЛБАР */
     function saveSelection() {
         const sel = window.getSelection();
         if (sel.rangeCount > 0) currentSavedSelection = sel.getRangeAt(0).cloneRange();
@@ -394,49 +399,33 @@
     });
 
     function format(command) { document.execCommand(command, false, null); editor.focus(); }
-
     function setCustomColor(color) {
         if (!currentSavedSelection) return;
         const selection = window.getSelection();
         selection.removeAllRanges(); selection.addRange(currentSavedSelection);
-        const span = document.createElement("span");
-        span.style.color = color; span.style.fontWeight = "bold";
-        try { currentSavedSelection.surroundContents(span); } catch (e) { document.execCommand('foreColor', false, color); }
+        document.execCommand('foreColor', false, color);
         editor.focus();
     }
-
     function toggleAiSubmenu(event) { event.stopPropagation(); aiMenu.style.display = aiMenu.style.display === 'flex' ? 'none' : 'flex'; }
-
+    
     function injectAI(mode) {
         aiMenu.style.display = 'none'; toolbar.style.display = 'none';
         const loader = document.getElementById('ai-loading'); loader.style.display = 'block';
-
-        const modules = {
-            cinema: `<p><br><span style="color: var(--purple);"><b>[🚀 Кинематографичный Лор]:</b></span> Шаг в неизведанное. Крылья Люми вспыхнули неоном, переписывая структуру 1 NEON LEVEL...</p>`,
-            crypto: `<p><br><span style="color: var(--sub);"><b>[🛡️ Шифрование Оракула]:</b></span> Код фразы заблокирован в защищенном слое. Активируйте ключ 🔑) для дешифровки комнат.</p>`,
-            cats: `<p><br><span style="color: #ffbcaa;"><b>[🎭 Эмоции Кошек]:</b></span> Сердце Люми сжалось. Друзья были так близко, но стена неона казалась непреодолимой.</p>`,
-            clear: `<p><br><span style="color: #bbf1c8;"><b>[⚡ Максимальная Понятность]:</b></span> Цель: Пройти 1 NEON LEVEL с помощью новой способности летать и разблокировать Штаб ЛМСХ.</p>`,
-            madness: `<p><br><span style="color: #f9ffb3;"><b>[🔮 Generator Безумия 3.3]:</b></span> Симуляция Быстрого Помощника вышла из-под контроля! Кошки видят тебя сквозь код!</p>`
+        const mods = {
+            cinema: `<p><br><span style="color: var(--purple);"><b>[🚀 Кинематографичный Лор]:</b></span> Неоновые искры шлюзов поглотили Люми...</p>`,
+            madness: `<p><br><span style="color: #f9ffb3;"><b>[🔮 Generator Безумия]:</b></span> Система ЛМСХ взломана Фиолетовой Кошкой!</p>`
         };
-
         setTimeout(() => {
             loader.style.display = 'none';
-            editor.innerHTML += modules[mode] || modules['clear'];
+            editor.innerHTML += mods[mode];
             scrollBox.scrollTop = scrollBox.scrollHeight;
-        }, 1000);
+        }, 800);
     }
 
-    function openPodcast() {
-        const secureUrl = "https://notebooklm.google.com/notebook/твой_id_блокнота";
-        window.open(secureUrl, '_blank');
-    }
+    function openPodcast() { window.open("https://notebooklm.google.com/", '_blank'); }
 
-    window.onclick = function(event) { if (aiMenu && aiMenu.style.display === 'block') { aiMenu.style.display = 'none'; } }
-
-    // Инициализация дефолтных систем
     loadStory(1);
     renderPacks();
 </script>
-
 </body>
 </html>
